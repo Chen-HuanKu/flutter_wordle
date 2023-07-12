@@ -5,7 +5,6 @@ class letterBlock extends StatelessWidget {
   final String letter;
   final Color backgroundColor;
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
