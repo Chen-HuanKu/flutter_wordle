@@ -1,4 +1,4 @@
-const targetWords = [
+const target_words = [
 "ABATE",
 "ABIDE",
 "ABODE",

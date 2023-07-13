@@ -1,14 +1,16 @@
-
-import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:wordle/LetterBlock.dart';
 import 'package:wordle/keyboard_letter_block.dart';
+import 'guessing_words.dart';
+import 'target_words.dart';
 
-const wordToGuess = "APPLE";
-const guessingWords = ["APPLE", "HAPPY"];
 
-var myFile = File("guessing_words.txt");
+final random = Random();
+
+var targetWord = target_words[random.nextInt(target_words.length)];
+
 
 void main() {
   runApp(const MyApp());
@@ -150,11 +152,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           backgroundColor: Colors.white,
                         ),);
-                      } else if (buffer.substring(wordStart, wordEnd) != "APPLE") {
+                      } else if (!guessing_words.contains(buffer.substring(wordStart, wordEnd))) {
                         ScaffoldMessenger.of(context).showSnackBar(
                            SnackBar(
                             content: Text(
-                              "$buffer is not word list ",
+                              "$buffer is not word list $targetWord is the answer ",
                               style: const TextStyle(color: Colors.black),
                             ),
                             backgroundColor: Colors.white,
@@ -162,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         );
                         currentWord++;
 
-                      } else if (buffer.substring(wordStart, wordEnd) == wordToGuess) {
+                      } else if (buffer.substring(wordStart, wordEnd) == targetWord) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
@@ -175,6 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         currentWord++;
                       } else {
                         //word is in list check letters
+                      
                         currentWord++;
                       }
                     } else if (index == 8) {
@@ -191,6 +194,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+void checkLetter(String letter){
+  
 }
 
 final row1 = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"];
