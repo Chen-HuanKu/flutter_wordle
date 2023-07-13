@@ -1,8 +1,14 @@
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:wordle/LetterBlock.dart';
 import 'package:wordle/keyboard_letter_block.dart';
 
-const wordToGuess = "apple";
+const wordToGuess = "APPLE";
+const guessingWords = ["APPLE", "HAPPY"];
+
+var myFile = File("guessing_words.txt");
 
 void main() {
   runApp(const MyApp());
@@ -30,6 +36,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String buffer = "";
+  int currentWord = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
               (index) => letterBlock(
                 backgroundColor: Colors.transparent,
                 letter: (index < buffer.length) ? buffer[index] : "",
-                //if index < buffer then buffer[index] else 
+                //if index < buffer then buffer[index] else
               ),
             ),
           ),
@@ -90,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 backgroundColor: Colors.grey,
                 onKeyPress: () {
                   setState(() {
-                      buffer = buffer + row2[index];
+                    buffer = buffer + row2[index];
                   });
                 },
               ),
@@ -106,14 +113,73 @@ class _MyHomePageState extends State<MyHomePage> {
                 backgroundColor: Colors.grey,
                 onKeyPress: () {
                   setState(() {
-                    if(index == 0){
+                    if (index == 0) {
                       //check if word exists
                       //if word is 5 letters
-                      //if word = wordinlist 
+                      //if word = wordinlist
                       //what letters match
-                    }else if (index == 8){
+                      int wordStart = 0;
+                      int wordEnd = 0;
+
+                      if (currentWord == 1) {
+                        wordStart = 0;
+                        wordEnd = 5;
+                      } else if (currentWord == 2) {
+                        wordStart = 5;
+                        wordEnd = 10;
+                      } else if (currentWord == 3) {
+                        wordStart = 10;
+                        wordEnd = 15;
+                      } else if (currentWord == 4) {
+                        wordStart = 15;
+                        wordEnd = 20;
+                      } else if (currentWord == 5) {
+                        wordStart = 20;
+                        wordEnd = 25;
+                      } else if (currentWord == 6){
+                        wordStart = 25;
+                        wordEnd = 30;
+                      }
+
+                      if (buffer.substring(wordStart, wordEnd).length != 5) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text(
+                            "Not enough letters",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          backgroundColor: Colors.white,
+                        ),);
+                      } else if (buffer.substring(wordStart, wordEnd) != "APPLE") {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                           SnackBar(
+                            content: Text(
+                              "$buffer is not word list ",
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                            backgroundColor: Colors.white,
+                          ),
+                        );
+                        currentWord++;
+
+                      } else if (buffer.substring(wordStart, wordEnd) == wordToGuess) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Correct",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            backgroundColor: Colors.white,
+                          ),
+                        );
+                        currentWord++;
+                      } else {
+                        //word is in list check letters
+                        currentWord++;
+                      }
+                    } else if (index == 8) {
                       buffer = buffer.substring(0, buffer.length - 1);
-                    }else {
+                    } else {
                       buffer = buffer + row3[index];
                     }
                   });
