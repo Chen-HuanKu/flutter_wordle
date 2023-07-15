@@ -6,11 +6,12 @@ import 'package:wordle/keyboard_letter_block.dart';
 import 'guessing_words.dart';
 import 'target_words.dart';
 
-
 final random = Random();
 
 var targetWord = target_words[random.nextInt(target_words.length)];
-
+String buffer = "";
+int currentWord = 1;
+List<String> pastWords = [];
 
 void main() {
   runApp(const MyApp());
@@ -37,8 +38,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String buffer = "";
-  int currentWord = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,20 +58,41 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           //grid and keyboard
           GridView.count(
-            shrinkWrap: true,
-            padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
-            crossAxisCount: 5,
-            mainAxisSpacing: 15,
-            crossAxisSpacing: 5,
-            children: List.generate(
-              30,
-              (index) => letterBlock(
-                backgroundColor: Colors.transparent,
-                letter: (index < buffer.length) ? buffer[index] : "",
-                //if index < buffer then buffer[index] else
-              ),
-            ),
-          ),
+              shrinkWrap: true,
+              padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
+              crossAxisCount: 5,
+              mainAxisSpacing: 15,
+              crossAxisSpacing: 5,
+              children: List.generate(
+                    10,
+                    (index) => letterBlock(
+                      backgroundColor: (index < buffer.length)
+                          ? checkLetter(buffer[index], index)
+                          : Colors.transparent,
+                      letter: (index < buffer.length) ? buffer[index] : "",
+                      //if index < buffer then buffer[index] else
+                    ),
+                  ) +
+                  List.generate(
+                    10,
+                    (index) => letterBlock(
+                      backgroundColor: (index < buffer.length)
+                          ? checkLetter(buffer[index], index)
+                          : Colors.transparent,
+                      letter: (index < buffer.length) ? buffer[index] : "",
+                      //if index < buffer then buffer[index] else
+                    ),
+                  ) +
+                  List.generate(
+                    10,
+                    (index) => letterBlock(
+                      backgroundColor: (index < buffer.length)
+                          ? checkLetter(buffer[index], index)
+                          : Colors.transparent,
+                      letter: (index < buffer.length) ? buffer[index] : "",
+                      //if index < buffer then buffer[index] else
+                    ),
+                  )),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -116,70 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onKeyPress: () {
                   setState(() {
                     if (index == 0) {
-                      //check if word exists
-                      //if word is 5 letters
-                      //if word = wordinlist
-                      //what letters match
-                      int wordStart = 0;
-                      int wordEnd = 0;
-
-                      if (currentWord == 1) {
-                        wordStart = 0;
-                        wordEnd = 5;
-                      } else if (currentWord == 2) {
-                        wordStart = 5;
-                        wordEnd = 10;
-                      } else if (currentWord == 3) {
-                        wordStart = 10;
-                        wordEnd = 15;
-                      } else if (currentWord == 4) {
-                        wordStart = 15;
-                        wordEnd = 20;
-                      } else if (currentWord == 5) {
-                        wordStart = 20;
-                        wordEnd = 25;
-                      } else if (currentWord == 6){
-                        wordStart = 25;
-                        wordEnd = 30;
-                      }
-
-                      if (buffer.substring(wordStart, wordEnd).length != 5) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                          content: Text(
-                            "Not enough letters",
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          backgroundColor: Colors.white,
-                        ),);
-                      } else if (!guessing_words.contains(buffer.substring(wordStart, wordEnd))) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                           SnackBar(
-                            content: Text(
-                              "$buffer is not word list $targetWord is the answer ",
-                              style: const TextStyle(color: Colors.black),
-                            ),
-                            backgroundColor: Colors.white,
-                          ),
-                        );
-                        currentWord++;
-
-                      } else if (buffer.substring(wordStart, wordEnd) == targetWord) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "Correct",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            backgroundColor: Colors.white,
-                          ),
-                        );
-                        currentWord++;
-                      } else {
-                        //word is in list check letters
-                      
-                        currentWord++;
-                      }
+                      onEnterTap(context);
                     } else if (index == 8) {
                       buffer = buffer.substring(0, buffer.length - 1);
                     } else {
@@ -196,8 +153,84 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-void checkLetter(String letter){
-  
+void onEnterTap(context) {
+  //check if word exists
+  //if word is 5 letters
+  //if word = wordinlist
+  //what letters match
+  int wordStart = 0;
+  int wordEnd = 0;
+
+  if (currentWord == 1) {
+    wordStart = 0;
+    wordEnd = 5;
+  } else if (currentWord == 2) {
+    wordStart = 5;
+    wordEnd = 10;
+  } else if (currentWord == 3) {
+    wordStart = 10;
+    wordEnd = 15;
+  } else if (currentWord == 4) {
+    wordStart = 15;
+    wordEnd = 20;
+  } else if (currentWord == 5) {
+    wordStart = 20;
+    wordEnd = 25;
+  } else if (currentWord == 6) {
+    wordStart = 25;
+    wordEnd = 30;
+  }
+
+  if (buffer.substring(wordStart, wordEnd).length != 5) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          "Not enough letters",
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.white,
+      ),
+    );
+  } else if (!guessing_words.contains(buffer.substring(wordStart, wordEnd))) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "$buffer is not word list $targetWord is the answer ",
+          style: const TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.white,
+      ),
+    );
+  } else if (buffer.substring(wordStart, wordEnd) == targetWord) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          "Correct",
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.white,
+      ),
+    );
+    currentWord++;
+  } else {
+    //word is in list check letters
+    List<String> word = buffer.substring(wordStart, wordEnd).split('');
+    pastWords.add(word.join());
+    currentWord++;
+  }
+}
+
+Color checkLetter(String letter, int index) {
+  List<String> targetWordSplit = targetWord.split('');
+  if (targetWordSplit.contains(letter)) {
+    if (targetWordSplit[index] == letter) {
+      return Colors.green;
+    } else {
+      return Colors.yellow;
+    }
+  } else {
+    return Colors.grey;
+  }
 }
 
 final row1 = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"];
