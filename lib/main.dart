@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:wordle/LetterBlock.dart';
+import 'package:wordle/correct_alert_dialog.dart';
 import 'package:wordle/keyboard_letter_block.dart';
 import 'guessing_words.dart';
 import 'target_words.dart';
@@ -190,6 +191,8 @@ void onEnterTap(context) {
     List<String> word = buffer.split('');
     pastWords = pastWords + word;
     buffer = "";
+    showDialog(context: context, builder: (_)=>const CorrectAlertDialog());
+
   } else {
     //word is in list check letters
     List<String> word = buffer.split('');
