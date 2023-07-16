@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
               10,
               (index) => keyboard_letter_block(
                 letter: row1[index],
-                backgroundColor: Colors.grey,
+                backgroundColor: (pastWords.contains(row1[index]))? (targetWord.contains(row1[index]))? const Color(0xFF6ca965): Colors.black: const Color(0xFF787c7f),
                 onKeyPress: () {
                   setState(() {
                     buffer = buffer + row1[index];
@@ -115,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
               9,
               (index) => keyboard_letter_block(
                 letter: row2[index],
-                backgroundColor: Colors.grey,
+                backgroundColor: (pastWords.contains(row2[index]))? (targetWord.contains(row2[index]))? const Color(0xFF6ca965): Colors.black: const Color(0xFF787c7f),
                 onKeyPress: () {
                   setState(() {
                     buffer = buffer + row2[index];
@@ -131,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
               9,
               (index) => keyboard_letter_block(
                 letter: row3[index],
-                backgroundColor: Colors.grey,
+                backgroundColor: (pastWords.contains(row3[index]))? (targetWord.contains(row3[index]))? const Color(0xFF6ca965): Colors.black: const Color(0xFF787c7f),
                 onKeyPress: () {
                   setState(() {
                     if (index == 0) {
