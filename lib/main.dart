@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -58,41 +59,38 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           //grid and keyboard
           GridView.count(
-              shrinkWrap: true,
-              padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
-              crossAxisCount: 5,
-              mainAxisSpacing: 15,
-              crossAxisSpacing: 5,
-              children: List.generate(
-                    10,
-                    (index) => letterBlock(
-                      backgroundColor: (index < buffer.length)
-                          ? checkLetter(buffer[index], index)
-                          : Colors.transparent,
-                      letter: (index < buffer.length) ? buffer[index] : "",
-                      //if index < buffer then buffer[index] else
-                    ),
-                  ) +
-                  List.generate(
-                    10,
-                    (index) => letterBlock(
-                      backgroundColor: (index < buffer.length)
-                          ? checkLetter(buffer[index], index)
-                          : Colors.transparent,
-                      letter: (index < buffer.length) ? buffer[index] : "",
-                      //if index < buffer then buffer[index] else
-                    ),
-                  ) +
-                  List.generate(
-                    10,
-                    (index) => letterBlock(
-                      backgroundColor: (index < buffer.length)
-                          ? checkLetter(buffer[index], index)
-                          : Colors.transparent,
-                      letter: (index < buffer.length) ? buffer[index] : "",
-                      //if index < buffer then buffer[index] else
-                    ),
-                  )),
+            shrinkWrap: true,
+            padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
+            crossAxisCount: 5,
+            mainAxisSpacing: 15,
+            crossAxisSpacing: 5,
+            children: List.generate(
+                  (pastWords.length),
+                  (index) => letterBlock(
+                    backgroundColor: (index < pastWords.length)
+                        ? checkLetter(pastWords[index], index)
+                        : Colors.transparent,
+                    letter: (index < pastWords.length) ? pastWords[index] : "",
+                    //if index < buffer then buffer[index] else
+                  ),
+                ) +
+                List.generate(
+                  5,
+                  (index) => letterBlock(
+                    backgroundColor: Colors.transparent,
+                    letter: (index < buffer.length) ? buffer[index] : "",
+                    //if index < buffer then buffer[index] else
+                  ),
+                ) +
+                List.generate(
+                  (25 - (pastWords.length)),
+                  (index) => const letterBlock(
+                    backgroundColor: Colors.transparent,
+                    letter: "",
+                    //if index < buffer then buffer[index] else
+                  ),
+                ),
+          ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -158,30 +156,8 @@ void onEnterTap(context) {
   //if word is 5 letters
   //if word = wordinlist
   //what letters match
-  int wordStart = 0;
-  int wordEnd = 0;
 
-  if (currentWord == 1) {
-    wordStart = 0;
-    wordEnd = 5;
-  } else if (currentWord == 2) {
-    wordStart = 5;
-    wordEnd = 10;
-  } else if (currentWord == 3) {
-    wordStart = 10;
-    wordEnd = 15;
-  } else if (currentWord == 4) {
-    wordStart = 15;
-    wordEnd = 20;
-  } else if (currentWord == 5) {
-    wordStart = 20;
-    wordEnd = 25;
-  } else if (currentWord == 6) {
-    wordStart = 25;
-    wordEnd = 30;
-  }
-
-  if (buffer.substring(wordStart, wordEnd).length != 5) {
+  if (buffer.length != 5) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
@@ -191,7 +167,7 @@ void onEnterTap(context) {
         backgroundColor: Colors.white,
       ),
     );
-  } else if (!guessing_words.contains(buffer.substring(wordStart, wordEnd))) {
+  } else if (!guessing_words.contains(buffer)) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -201,7 +177,7 @@ void onEnterTap(context) {
         backgroundColor: Colors.white,
       ),
     );
-  } else if (buffer.substring(wordStart, wordEnd) == targetWord) {
+  } else if (buffer == targetWord) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
@@ -211,25 +187,31 @@ void onEnterTap(context) {
         backgroundColor: Colors.white,
       ),
     );
-    currentWord++;
+    List<String> word = buffer.split('');
+    pastWords = pastWords + word;
+    buffer = "";
   } else {
     //word is in list check letters
-    List<String> word = buffer.substring(wordStart, wordEnd).split('');
-    pastWords.add(word.join());
+    List<String> word = buffer.split('');
+    pastWords = pastWords + word;
     currentWord++;
+    buffer = "";
   }
 }
 
 Color checkLetter(String letter, int index) {
+
+  index = index%5;
+
   List<String> targetWordSplit = targetWord.split('');
   if (targetWordSplit.contains(letter)) {
     if (targetWordSplit[index] == letter) {
-      return Colors.green;
+      return const Color(0xFF6ca965);
     } else {
-      return Colors.yellow;
+      return const Color(0xFFc8b653);
     }
   } else {
-    return Colors.grey;
+    return const Color(0xFF787c7f);
   }
 }
 
